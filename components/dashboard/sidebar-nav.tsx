@@ -9,6 +9,9 @@ import {
   Hammer,
   Settings,
   Users,
+  FileText,
+  Send,
+  BarChart3,
 } from "lucide-react";
 import {
   Collapsible,
@@ -25,14 +28,18 @@ type NavItem = {
 
 const sections: { title: string; items: NavItem[] }[] = [
   {
+    title: "Workflow",
+    items: [
+      { label: "Overview", href: "/dashboard/overview", icon: BarChart3 },
+      { label: "Documents", href: "/dashboard/documents", icon: FileText },
+      { label: "Send for Signature", href: "/dashboard/send", icon: Send },
+    ],
+  },
+  {
     title: "Platform",
     items: [
-      { label: "Overview", href: "/dashboard", icon: Home },
-      {
-        label: "Feature",
-        href: "/dashboard/feature",
-        icon: Hammer,
-      },
+      { label: "Dashboard Home", href: "/dashboard", icon: Home },
+      { label: "Feature", href: "/dashboard/feature", icon: Hammer },
     ],
   },
   {
