@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useActionState, useEffect, useMemo, useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,21 +13,14 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
 import {
   type AuthActionState,
   signInWithPassword,
   signUpWithPassword,
 } from "./actions";
 
-// Purpose: Client UI for /auth.
-// Use this file for auth mode toggles, form interactivity, and browser-only logic.
-//
-// Replication pattern for new interactive pages:
-// - Keep server mutations in `actions.ts`.
-// - Bind actions here with `useActionState`.
-// - Use local state only for presentation/interaction (tabs, steps, toggles).
-// - Keep forms simple: collect inputs and submit to a server action.
+// SignPilot Auth - Custom UI Copies
+const SIGNPILOT_BRAND = "SignPilot";
 
 type AuthMode = "signin" | "signup";
 
@@ -44,21 +36,10 @@ const initialActionState: AuthActionState = {
 };
 
 export default function Client({ redirectTo, flashStatus, flashMessage }: ClientProps) {
-  // UI state: only controls which form is shown.
   const [mode, setMode] = useState<AuthMode>("signin");
 
-  // Server action wiring:
-  // - `state` carries serializable feedback (error/success message).
-  // - `action` is assigned directly to form `action={...}`.
-  // - `pending` drives submit button loading state.
-  const [signInState, signInAction, signInPending] = useActionState(
-    signInWithPassword,
-    initialActionState
-  );
-  const [signUpState, signUpAction, signUpPending] = useActionState(
-    signUpWithPassword,
-    initialActionState
-  );
+  const [signInState, signInAction, signInPending] = useActionState(signInWithPassword, initialActionState);
+  const [signUpState, signUpAction, signUpPending] = useActionState(signUpWithPassword, initialActionState);
 
   const activeState = mode === "signin" ? signInState : signUpState;
   const isPending = mode === "signin" ? signInPending : signUpPending;
@@ -69,7 +50,6 @@ export default function Client({ redirectTo, flashStatus, flashMessage }: Client
     }
   }, [activeState._devUrl]);
 
-  // URL hash keeps the auth mode linkable (`/auth#signin` or `/auth#signup`).
   useEffect(() => {
     const syncFromHash = () => {
       const hash = window.location.hash.replace("#", "").toLowerCase();
@@ -89,19 +69,22 @@ export default function Client({ redirectTo, flashStatus, flashMessage }: Client
   };
 
   const content = useMemo(() => {
-    // View-model for mode-specific heading/description copy.
     if (mode === "signup") {
       return {
         id: "signup",
-        title: "Create account",
-        description: "Start your free account in less than a minute.",
+        title: `Create your ${SIGNPILOT_BRAND} account`,
+        description: "Secure e-signature platform for your business",
+        button: `Create your ${SIGNPILOT_BRAND} account`,
+        helper: `By continuing, you agree to ${SIGNPILOT_BRAND}’s Terms and Privacy Policy.`,
       };
     }
 
     return {
       id: "signin",
-      title: "Sign in",
-      description: "Use your email and password to continue.",
+      title: `Welcome to ${SIGNPILOT_BRAND}`,
+      description: "Secure e-signature platform for your business",
+      button: `Sign in to ${SIGNPILOT_BRAND}`,
+      helper: `By continuing, you agree to ${SIGNPILOT_BRAND}’s Terms and Privacy Policy.`,
     };
   }, [mode]);
 
@@ -113,21 +96,19 @@ export default function Client({ redirectTo, flashStatus, flashMessage }: Client
           <div className="relative z-10 flex h-full flex-col justify-between">
             <div className="space-y-4">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary/80">
-                Panda Access
+                {SIGNPILOT_BRAND}
               </p>
               <h1 className="max-w-sm text-4xl font-semibold leading-tight tracking-tight">
-                Launch faster with one workspace for your team.
+                Fast, secure digital signatures for modern businesses.
               </h1>
               <p className="max-w-md text-sm text-muted-foreground">
-                Secure auth, polished interface, and a clean onboarding flow built
-                for production teams.
+                SignPilot makes sending, signing, and managing documents easy, efficient, and legally binding.
               </p>
             </div>
-
             <div className="relative overflow-hidden rounded-2xl border border-secondary/70 bg-background/80 p-3 shadow-lg">
               <Image
-                src="/demo-img.jpg"
-                alt="Panda product preview"
+                src="/hero-image-light.jpeg"
+                alt="SignPilot product preview"
                 className="h-full w-full rounded-xl object-cover"
                 width={1200}
                 height={900}
@@ -148,6 +129,7 @@ export default function Client({ redirectTo, flashStatus, flashMessage }: Client
                       ? "bg-background text-foreground shadow-sm"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
+                  data-testid="sign-in-mode"
                 >
                   Sign in
                 </button>
@@ -159,8 +141,9 @@ export default function Client({ redirectTo, flashStatus, flashMessage }: Client
                       ? "bg-background text-foreground shadow-sm"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
+                  data-testid="sign-up-mode"
                 >
-                  Sign up
+                  Start Free Trial
                 </button>
               </div>
 
@@ -184,7 +167,6 @@ export default function Client({ redirectTo, flashStatus, flashMessage }: Client
               ) : null}
 
               {mode === "signin" ? (
-                // Sign-in form submits directly to server action.
                 <form className="space-y-4" action={signInAction}>
                   {redirectTo && <input type="hidden" name="redirectTo" value={redirectTo} />}
                   <div className="space-y-2">
@@ -197,12 +179,11 @@ export default function Client({ redirectTo, flashStatus, flashMessage }: Client
                       required
                     />
                   </div>
-
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <Label htmlFor="signin-password">Password</Label>
                       <Link href="/auth/forgot-password" className="text-sm text-muted-foreground hover:text-foreground">
-                        Forgot password?
+                        Forgot your password?
                       </Link>
                     </div>
                     <Input
@@ -213,26 +194,23 @@ export default function Client({ redirectTo, flashStatus, flashMessage }: Client
                       required
                     />
                   </div>
-
                   <Button type="submit" className="w-full" disabled={isPending}>
-                    {isPending ? "Signing in..." : "Sign in"}
+                    {isPending ? "Signing in..." : content.button}
                   </Button>
                 </form>
               ) : (
-                // Sign-up form submits directly to server action.
                 <form className="space-y-4" action={signUpAction}>
                   {redirectTo && <input type="hidden" name="redirectTo" value={redirectTo} />}
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="signup-first-name">First name</Label>
-                      <Input id="signup-first-name" name="firstName" placeholder="Chirag" required />
+                      <Input id="signup-first-name" name="firstName" placeholder="Jane" required />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="signup-last-name">Last name</Label>
-                      <Input id="signup-last-name" name="lastName" placeholder="Dodiya" required />
+                      <Input id="signup-last-name" name="lastName" placeholder="Doe" required />
                     </div>
                   </div>
-
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>
                     <Input
@@ -243,7 +221,6 @@ export default function Client({ redirectTo, flashStatus, flashMessage }: Client
                       required
                     />
                   </div>
-
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="signup-password">Password</Label>
@@ -266,9 +243,8 @@ export default function Client({ redirectTo, flashStatus, flashMessage }: Client
                       />
                     </div>
                   </div>
-
                   <Button type="submit" className="w-full" disabled={isPending}>
-                    {isPending ? "Creating account..." : "Create account"}
+                    {isPending ? "Creating account..." : content.button}
                   </Button>
                 </form>
               )}
@@ -284,6 +260,34 @@ export default function Client({ redirectTo, flashStatus, flashMessage }: Client
                   {activeState.message}
                 </p>
               ) : null}
+
+              <div className="pt-2 text-xs text-muted-foreground text-center">{content.helper}</div>
+
+              <div className="text-center pt-2">
+                {mode === "signin" ? (
+                  <span>
+                    New to {SIGNPILOT_BRAND}?{" "}
+                    <button
+                      type="button"
+                      onClick={() => setModeWithHash("signup")}
+                      className="text-primary font-medium hover:underline"
+                    >
+                      Create an account
+                    </button>
+                  </span>
+                ) : (
+                  <span>
+                    Already have an account?{" "}
+                    <button
+                      type="button"
+                      onClick={() => setModeWithHash("signin")}
+                      className="text-primary font-medium hover:underline"
+                    >
+                      Sign in
+                    </button>
+                  </span>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
