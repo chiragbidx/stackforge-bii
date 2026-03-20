@@ -1,14 +1,13 @@
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
-
-import Client from "@/app/dashboard/client";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { getAuthSession } from "@/lib/auth/session";
 import { db } from "@/lib/db/client";
 import { users } from "@/lib/db/schema";
 
 // Purpose: Server route entry for /dashboard.
-// Keep auth checks and database reads in this file,
-// then pass prepared props into `client.tsx`.
+// SignPilot version: routes to dashboard welcome and CTAs.
 
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -30,9 +29,20 @@ export default async function DashboardPage() {
   const firstName = user?.firstName || "there";
 
   return (
-    <Client
-      greeting={getGreeting()}
-      firstName={firstName}
-    />
+    <section className="py-12 flex flex-col items-center justify-center min-h-[60vh]">
+      <h1 className="text-4xl font-bold mb-2">Welcome to SignPilot</h1>
+      <p className="mb-4 text-lg text-muted-foreground">{getGreeting()}, {firstName}!</p>
+      <p className="mb-6 text-muted-foreground text-md">
+        No documents yet. Upload your first document to get started.
+      </p>
+      <div className="flex gap-4">
+        <Button asChild size="lg">
+          <Link href="#">Upload Document</Link>
+        </Button>
+        <Button asChild size="lg" variant="outline">
+          <Link href="#">Send Document for Signature</Link>
+        </Button>
+      </div>
+    </section>
   );
 }
