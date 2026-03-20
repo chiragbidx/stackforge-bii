@@ -34,7 +34,7 @@ export const Navbar = ({ isLoggedIn = false }: NavbarProps) => {
   const [isOpen, setIsOpen] = React.useState(false);
   return (
     <header className="shadow-inner bg-opacity-15 w-[90%] md:w-[70%] lg:w-[75%] lg:max-w-screen-xl top-5 mx-auto sticky border border-secondary z-40 rounded-2xl flex justify-between items-center p-2 bg-card">
-      <Link href="/" className="font-bold text-lg flex items-center">
+      <Link href="/" className="font-extrabold text-lg flex items-center tracking-tight">
         <ChevronsDown className="bg-gradient-to-tr border-secondary from-primary via-primary/70 to-primary rounded-lg w-9 h-9 mr-2 border text-white" />
         {navbar.brandName}
       </Link>
@@ -55,7 +55,7 @@ export const Navbar = ({ isLoggedIn = false }: NavbarProps) => {
             <div>
               <SheetHeader className="mb-4 ml-4">
                 <SheetTitle className="flex items-center">
-                  <Link href="/" className="flex items-center">
+                  <Link href="/" className="flex items-center font-extrabold tracking-tight">
                     <ChevronsDown className="bg-gradient-to-tr border-secondary from-primary via-primary/70 to-primary rounded-lg w-9 h-9 mr-2 border text-white" />
                     {navbar.brandName}
                   </Link>
@@ -106,7 +106,6 @@ export const Navbar = ({ isLoggedIn = false }: NavbarProps) => {
 
             <SheetFooter className="flex-col sm:flex-col justify-start items-start">
               <Separator className="mb-2" />
-
               <ThemeToggle mode="inline" />
             </SheetFooter>
           </SheetContent>
@@ -147,7 +146,6 @@ export const Navbar = ({ isLoggedIn = false }: NavbarProps) => {
               </div>
             </NavigationMenuContent>
           </NavigationMenuItem>
-
           <NavigationMenuItem>
             {navbar.routes.map(({ href, label }) => (
               <NavigationMenuLink key={href} asChild>
@@ -177,15 +175,17 @@ export const Navbar = ({ isLoggedIn = false }: NavbarProps) => {
         )}
         <ThemeToggle mode="inline" className="w-auto justify-center" />
 
-        <Button asChild size="sm" variant="ghost" aria-label={navbar.githubLink.ariaLabel}>
-          <Link
-            aria-label={navbar.githubLink.ariaLabel}
-            href={navbar.githubLink.href}
-            target="_blank"
-          >
-            <Github className="size-5" />
-          </Link>
-        </Button>
+        {navbar.githubLink.href && (
+          <Button asChild size="sm" variant="ghost" aria-label={navbar.githubLink.ariaLabel}>
+            <Link
+              aria-label={navbar.githubLink.ariaLabel}
+              href={navbar.githubLink.href}
+              target="_blank"
+            >
+              <Github className="size-5" />
+            </Link>
+          </Button>
+        )}
       </div>
     </header>
   );
